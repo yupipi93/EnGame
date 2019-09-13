@@ -1,0 +1,218 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+
+
+                              1 .area _CODE 
+                              2 
+                              3 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+
+
+                              4 .include "cpctelera.h.s"
+                              1 ;; CPCtelera Symbols
+                              2 .globl cpct_drawSolidBox_asm
+                              3 .globl cpct_getScreenPtr_asm
+                              4 
+                              5 .globl cpct_scanKeyboard_asm
+                              6 .globl cpct_isKeyPressed_asm
+                              7 
+                              8 .globl cpct_waitVSYNC_asm
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+
+
+                              5 
+                              6 
+                              7 
+                              8 
+                              9 ;;####################################
+                             10 ;; PRIVATE DATA
+                             11 ;;####################################
+                             12 
+                             13 
+                             14 ;; enemy Data
+   0000 4F                   15 enemy_x: 		.db #80-1		;;End of screen
+   0001 52                   16 enemy_y: 		.db #82
+   0002 01                   17 direccion:		.db #1			;; 1 = left, 2 = right
+                             18 
+                             19 
+                             20 
+                             21 
+                             22 
+                             23 ;;####################################
+                             24 ;; PUBLIC FUNCTIONS ::
+                             25 ;;####################################
+                             26 
+                             27 
+                             28 ;;====================================
+                             29 ;; Erase th enemy
+                             30 ;;====================================
+                             31 
+   0003                      32 enemy_erase::
+   0003 3E 00         [ 7]   33 	ld a, #0x00							;;Erase enemy (Backgrownd Color)
+   0005 CD 5B 00      [17]   34 	call drawEnemy  					;;Draw enemy :D
+                             35 
+   0008 C9            [10]   36 ret
+                             37 
+                             38 ;;====================================
+                             39 ;; Update the enemy
+                             40 ;;====================================
+                             41 
+   0009                      42 enemy_update::
+   0009 CD 17 00      [17]   43 	call updateEnemy	
+   000C C9            [10]   44 ret
+                             45 
+                             46 ;;====================================
+                             47 ;; Draw the enemy
+                             48 ;;====================================
+                             49 
+   000D                      50 enemy_draw::
+   000D 3E F0         [ 7]   51 	ld a, #0xF0							;;enemy Color RED
+   000F CD 5B 00      [17]   52 	call drawEnemy  					;;Draw enemy :D 
+                             53 
+   0012 C9            [10]   54 ret
+                             55 
+                             56 ;;====================================
+                             57 ;; Draw the enemy
+                             58 ;;====================================
+   0013                      59 enemy_getX::
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+
+
+                             60 
+   0013 3A 00 00      [13]   61 	ld a, (enemy_x)						;; B = Enemy_X
+   0016 C9            [10]   62 ret
+                             63 
+                             64 
+                             65 
+                             66 
+                             67 ;;####################################
+                             68 ;; PRIVATE FUNCTIONS
+                             69 ;;####################################
+                             70 
+                             71 ;;====================================
+                             72 ;; Move enemy right-left
+                             73 ;; DESTROY: AF
+                             74 ;;====================================
+                             75 
+   0017                      76 updateEnemy:
+   0017 3A 00 00      [13]   77 	ld 	a,(enemy_x) 					;; Load Enemy_X
+   001A FE 4E         [ 7]   78 	cp 	#80-2 							;; |
+   001C 28 08         [12]   79 	jr	z, changeToLeft 				;; if (Enemy_X == 79){ changeToLeft (dirrection = 1) }
+   001E FE 00         [ 7]   80 	cp 	#0 								;; |
+   0020 28 0D         [12]   81 	jr	z, changeToRight 				;; else if (Enemy_X == 0) { changeToRight (direcction = 2)}
+                             82 
+   0022 CD 38 00      [17]   83 	call moveTo							;; else {move player to direccion}
+                             84 
+   0025 C9            [10]   85 ret
+                             86 
+                             87 
+                             88 
+   0026                      89 changeToLeft: 							
+   0026 3E 01         [ 7]   90 	ld 	a, #1 							;; |
+   0028 32 02 00      [13]   91 	ld 	(direccion), a 					;; A = 1
+   002B CD 38 00      [17]   92 	call moveTo 						;; Move enemy to direction
+   002E C9            [10]   93 ret
+                             94 
+                             95 
+   002F                      96 changeToRight:
+   002F 3E 02         [ 7]   97 	ld 	a, #2 							;; |
+   0031 32 02 00      [13]   98 	ld 	(direccion), a 					;; A = 2
+   0034 CD 38 00      [17]   99 	call moveTo 						;; Move Enemy to direction
+   0037 C9            [10]  100 ret
+                            101 
+                            102 
+   0038                     103 moveTo:
+   0038 3A 02 00      [13]  104 	ld 	a, (direccion) 					;; A = direction
+   003B FE 01         [ 7]  105 	cp 	#1 								;; |
+   003D 28 10         [12]  106 	jr 	z, moveEnemyLeft 				;; if (direction = 1 [LEFT]) {Move Enemy to Left}
+   003F CD 43 00      [17]  107 	call moveEnemyRight					;; else {Move enmey to Right}
+                            108 
+   0042 C9            [10]  109 ret
+                            110 
+                            111 
+                            112 
+                            113 ;;====================================
+                            114 ;; Move enemy Right
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 5.
+Hexadecimal [16-Bits]
+
+
+
+                            115 ;; DESTROY: AF
+                            116 ;;====================================
+   0043                     117 moveEnemyRight:
+                            118 
+   0043 3A 00 00      [13]  119 	ld a, (enemy_x)					;; A = enemy_x
+   0046 FE 4E         [ 7]  120 	cp #80-2							;; Check if A is (limit of screen - enemy width)
+   0048 28 04         [12]  121 	jr z, dont_move_r						;; Dont move the enemy
+                            122 
+   004A 3C            [ 4]  123 		inc a 							;; Else: A++
+   004B 32 00 00      [13]  124 		ld (enemy_x), a 				;; enemy_x Update
+                            125 
+   004E                     126 	dont_move_r:
+   004E C9            [10]  127 ret
+                            128 
+                            129 
+                            130 
+                            131 ;;====================================
+                            132 ;; Move enemy Left
+                            133 ;; DESTROY: AF
+                            134 ;;====================================
+   004F                     135 moveEnemyLeft:
+                            136 
+   004F 3A 00 00      [13]  137 	ld a, (enemy_x)					;; A == enemy_x
+   0052 FE 00         [ 7]  138 	cp #0								;; Check if enemy (screen rigth limit)
+   0054 28 04         [12]  139 	jr z, dont_move_l
+                            140 	 
+   0056 3D            [ 4]  141 		dec a 							;; Else: A-- (enemy_X--)
+   0057 32 00 00      [13]  142 		ld (enemy_x), a 				;; enemy_x Update 
+                            143 
+   005A                     144 	dont_move_l:
+   005A C9            [10]  145 ret
+                            146 
+                            147 
+                            148 
+                            149 
+                            150 ;;====================================
+                            151 ;; Draw enemy
+                            152 ;; INPUTS:
+                            153 ;; 		A ==> Color Patern
+                            154 ;; DESTROY: AF, BC, DE, HL
+                            155 ;;====================================
+   005B                     156 drawEnemy:
+                            157 	
+   005B F5            [11]  158 	push af 							;; Save A in Stack
+                            159 	;;Calculate scrren position
+   005C 11 00 C0      [10]  160 	ld 		de, #0xC000					;;Video Memory Pointer
+   005F 3A 00 00      [13]  161 	ld 		 a, (enemy_x)				;;|
+   0062 4F            [ 4]  162 	ld 		 c, a 						;; C = enemy_x
+   0063 3A 01 00      [13]  163 	ld 		 a, (enemy_y)				;;|
+   0066 47            [ 4]  164 	ld 		 b, a 						;; B = enemy_y
+   0067 CD 00 00      [17]  165 	call 	cpct_getScreenPtr_asm		;; Get Pointer to Screen (return to HL)
+                            166 	
+                            167 
+                            168 	;; Draw a box
+   006A EB            [ 4]  169 	ex 		de, hl 						;; intercabia ambos valores DE --> to Screen Pointer 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 6.
+Hexadecimal [16-Bits]
+
+
+
+   006B F1            [10]  170 	pop 	af							;; A = User Selecter Color
+   006C 01 01 04      [10]  171 	ld 		bc, 	#0x0401				;; 4x4 pixeles
+   006F CD 00 00      [17]  172 	call 	 cpct_drawSolidBox_asm		;; Llamar dibujar solidBox
+                            173 
+   0072 C9            [10]  174 ret
+                            175 
+                            176 
+                            177 
+                            178 
+                            179 
+                            180 

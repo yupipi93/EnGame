@@ -1,0 +1,85 @@
+ASxxxx Linker V03.00 + NoICE + sdld,  page 1.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000000  .__.ABS.                           cpct_keyboard
+     00000000  l__DATA                         
+     000002D5  l__CODE                         
+     00004000  s__CODE                         
+     000042D5  s__DATA                         
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00004000    000002D5 =         725. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00004000  _main                              
+     00004026  enemy_erase                        
+     0000402C  enemy_update                       
+     00004030  enemy_draw                         
+     00004036  enemy_getX                         
+     00004096  _cpct_keyboardStatusBuffer         cpct_keyboard
+     000040B2  draw_floor                         cpct_keyboard
+     000040B6  player_erase                       cpct_keyboard
+     000040BC  player_update                      cpct_keyboard
+     000040C3  player_draw                        cpct_keyboard
+     000040C9  player_collition                   cpct_keyboard
+     000041B7  _cpct_isKeyPressed                 cpct_keyboard
+     000041B7  cpct_isKeyPressed_asm              cpct_keyboard
+     000041C3  _cpct_waitVSYNC                    cpct_video
+     000041C3  cpct_waitVSYNC_asm                 cpct_video
+     000041CB  _cpct_disableFirmware              cpct_firmware
+     000041CB  _cpct_removeInterruptHandler       cpct_firmware
+     000041CB  cpct_disableFirmware_asm           cpct_firmware
+     000041CB  cpct_removeInterruptHandler_asm    cpct_firmware
+     000041DB  cpct_drawSolidBox_asm              cpct_sprites
+     00004287  _cpct_mode_rom_status              cpct_firmware
+     00004288  cpct_getScreenPtr_asm              cpct_video
+     000042A4  _cpct_scanKeyboard                 cpct_keyboard
+     000042A4  cpct_scanKeyboard_asm              cpct_keyboard
+ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+
+Files Linked                              [ module(s) ]
+
+obj/player.h.rel                          [  ]
+obj/cpctelera.h.rel                       [  ]
+obj/main.rel                              [  ]
+obj/enemy.h.rel                           [  ]
+obj/enemy.rel                             [  ]
+obj/player.rel                            [ cpct_keyboard ]
+
+
+Libraries Linked                          [ object file ]
+
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpct_isKeyPressed.rel ]
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpct_waitVSYNC.rel ]
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpct_removeInterruptHandler.rel ]
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpct_drawSolidBox_asmbindings.re ]
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpc_mode_rom_status.rel ]
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpct_getScreenPtr_asmbindings.re ]
+/home/manjaro18/cpctelera-master/cpctelera/cpctelera.lib
+                                          [ cpct_scanKeyboard.rel ]
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+
+User Base Address Definitions
+
+_CODE = 0x4000
+_DATA = 0x0000
+
+
