@@ -11,6 +11,9 @@
 ;; Player Data
 player_x: 		.db #39
 player_y: 		.db #80
+player_w: 		.db #2 			;;Whidth
+player_h: 		.db #8 			;;Height
+
 player_jump:	.db #-1
 
 ;; Jump Table
@@ -72,6 +75,19 @@ ret
 
 
 ;;====================================
+;; Gets a pointer to hero data in HL
+;; DESTROY: HL
+;; RETURN: 
+;; 		HL: Pointer to Player data
+;;====================================
+
+player_getPtrHL::
+	ld 	hl, #player_x 					;; HL: pointer to player data
+ret
+
+
+
+;;====================================
 ;; Player Collition
 ;;====================================
 
@@ -95,12 +111,16 @@ ret
 ;;====================================
 calculateCollition:
 	ld 		b,a 						;; B = Enemy_X
-	ld 		c, #1 						;; C = Enemy_Width (2)
+	add 	a, #1 						;; A = Enemy_X + Width
+	ld 		c, a 						;; C = EX+Enemy_Width (2)
+	
 
-	ld 		a, (player_x) 				;; A = Player_X
-	ld 		d, #7 						;; D = Player_With (2)
+	ld 		a, (player_x) 				;; |
+	ld 		e, a 						;; E = Player_X
+	add 	a, #7 						;; |
+	ld 		d, a 						;; D = PX+Player_With (8)
 
-	;;comprobar si, Enemy es
+	;;Comprobar si, EX+Enemy_W  esta a la izquierda de Player_X
 
 	sub 	a,b 						;; |
 	jr 		z, collitionON				;; if (a==b){collition ON}

@@ -162,6 +162,7 @@ Hexadecimal [16-Bits]
                               6 .globl cpct_isKeyPressed_asm
                               7 
                               8 .globl cpct_waitVSYNC_asm
+                              9 .globl cpct_disableFirmware_asm
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 6.
 Hexadecimal [16-Bits]
 
@@ -176,355 +177,375 @@ Hexadecimal [16-Bits]
                              11 ;; Player Data
    000A 27                   12 player_x: 		.db #39
    000B 50                   13 player_y: 		.db #80
-   000C FF                   14 player_jump:	.db #-1
-                             15 
-                             16 ;; Jump Table
-   000D                      17 jumpTable:
-   000D FD FE FF FF          18 	.db 	#-3, #-2, #-1, #-1
-   0011 FF 00 00 00          19 	.db 	#-1, #00, #00, #00
-   0015 01 02 02 03          20 	.db 	#01, #02, #02, #03
-   0019 80                   21 	.db 	#0x80
-                             22 
-   001A 00                   23 floor_x: 		.db #00
-   001B 58                   24 floor_y:		.db #88
+   000C 02                   14 player_w: 		.db #2 			;;Whidth
+   000D 08                   15 player_h: 		.db #8 			;;Height
+                             16 
+   000E FF                   17 player_jump:	.db #-1
+                             18 
+                             19 ;; Jump Table
+   000F                      20 jumpTable:
+   000F FD FE FF FF          21 	.db 	#-3, #-2, #-1, #-1
+   0013 FF 00 00 00          22 	.db 	#-1, #00, #00, #00
+   0017 01 02 02 03          23 	.db 	#01, #02, #02, #03
+   001B 80                   24 	.db 	#0x80
                              25 
-                             26 
-                             27 
+   001C 00                   26 floor_x: 		.db #00
+   001D 58                   27 floor_y:		.db #88
                              28 
                              29 
                              30 
-                             31 ;;####################################
-                             32 ;; PUBLIC FUNCTIONS ::
-                             33 ;;####################################
-                             34 
-                             35 ;;====================================
-                             36 ;; Draw Floor
-                             37 ;;====================================
-   001C                      38 draw_floor::
-   001C CD 09 01      [17]   39  call drawFloor
-   001F C9            [10]   40 ret
-                             41 
-                             42 
-                             43 ;;====================================
-                             44 ;; Erase th Player
-                             45 ;;====================================
-                             46 
-   0020                      47 player_erase::
-   0020 3E 00         [ 7]   48 	ld a, #0x00							;;Erase Player (Backgrownd Color)
-   0022 CD F1 00      [17]   49 	call drawPlayer 					;;Draw player :D
-                             50 
-   0025 C9            [10]   51 ret
-                             52 
-                             53 ;;====================================
-                             54 ;; Update the Player
-                             55 ;;====================================
-                             56 
-   0026                      57 player_update::
-   0026 CD 68 00      [17]   58 	call jumpControl 					;;Do Jump
-   0029 CD B4 00      [17]   59 	call HandleEvent 					;;Keyboard check
+                             31 
+                             32 
+                             33 
+                             34 ;;####################################
+                             35 ;; PUBLIC FUNCTIONS ::
+                             36 ;;####################################
+                             37 
+                             38 ;;====================================
+                             39 ;; Draw Floor
+                             40 ;;====================================
+   001E                      41 draw_floor::
+   001E CD 12 01      [17]   42  call drawFloor
+   0021 C9            [10]   43 ret
+                             44 
+                             45 
+                             46 ;;====================================
+                             47 ;; Erase th Player
+                             48 ;;====================================
+                             49 
+   0022                      50 player_erase::
+   0022 3E 00         [ 7]   51 	ld a, #0x00							;;Erase Player (Backgrownd Color)
+   0024 CD FA 00      [17]   52 	call drawPlayer 					;;Draw player :D
+                             53 
+   0027 C9            [10]   54 ret
+                             55 
+                             56 ;;====================================
+                             57 ;; Update the Player
+                             58 ;;====================================
+                             59 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 7.
 Hexadecimal [16-Bits]
 
 
 
-                             60 
-   002C C9            [10]   61 ret
-                             62 
-                             63 ;;====================================
-                             64 ;; Draw the Player
-                             65 ;;====================================
-                             66 
-   002D                      67 player_draw::
-   002D 3E FF         [ 7]   68 	ld a, #0xFF							;;Player Color RED
-   002F CD F1 00      [17]   69 	call drawPlayer 					;;Draw player :D 
-                             70 
-   0032 C9            [10]   71 ret
-                             72 
+   0028                      60 player_update::
+   0028 CD 71 00      [17]   61 	call jumpControl 					;;Do Jump
+   002B CD BD 00      [17]   62 	call HandleEvent 					;;Keyboard check
+                             63 
+   002E C9            [10]   64 ret
+                             65 
+                             66 ;;====================================
+                             67 ;; Draw the Player
+                             68 ;;====================================
+                             69 
+   002F                      70 player_draw::
+   002F 3E FF         [ 7]   71 	ld a, #0xFF							;;Player Color RED
+   0031 CD FA 00      [17]   72 	call drawPlayer 					;;Draw player :D 
                              73 
-                             74 ;;====================================
-                             75 ;; Player Collition
-                             76 ;;====================================
-                             77 
-   0033                      78 player_collition::
-                             79 
-   0033 CD 37 00      [17]   80  	call calculateCollition
-   0036 C9            [10]   81 ret
-                             82 
+   0034 C9            [10]   74 ret
+                             75 
+                             76 
+                             77 ;;====================================
+                             78 ;; Gets a pointer to hero data in HL
+                             79 ;; DESTROY: HL
+                             80 ;; RETURN: 
+                             81 ;; 		HL: Pointer to Player data
+                             82 ;;====================================
                              83 
-                             84 
-                             85 
-                             86 ;;####################################
-                             87 ;; PRIVATE FUNCTIONS
-                             88 ;;####################################
+   0035                      84 player_getPtrHL::
+   0035 21 0A 00      [10]   85 	ld 	hl, #player_x 					;; HL: pointer to player data
+   0038 C9            [10]   86 ret
+                             87 
+                             88 
                              89 
-                             90 
-                             91 
+                             90 ;;====================================
+                             91 ;; Player Collition
                              92 ;;====================================
-                             93 ;; Collition Inidcator
-                             94 ;; DESTROY: 
-                             95 ;;====================================
-   0037                      96 calculateCollition:
-   0037 47            [ 4]   97 	ld 		b,a 						;; B = Enemy_X
-   0038 0E 01         [ 7]   98 	ld 		c, #1 						;; C = Enemy_Width (2)
+                             93 
+   0039                      94 player_collition::
+                             95 
+   0039 CD 3D 00      [17]   96  	call calculateCollition
+   003C C9            [10]   97 ret
+                             98 
                              99 
-   003A 3A 0A 00      [13]  100 	ld 		a, (player_x) 				;; A = Player_X
-   003D 16 07         [ 7]  101 	ld 		d, #7 						;; D = Player_With (2)
-                            102 
-                            103 	;;comprobar si, Enemy es
-                            104 
-   003F 90            [ 4]  105 	sub 	a,b 						;; |
-   0040 28 04         [12]  106 	jr 		z, collitionON				;; if (a==b){collition ON}
-   0042 CD 4C 00      [17]  107 	call collitionOFF					;; else{collitionOFF}
-   0045 C9            [10]  108 ret
-                            109 
-   0046                     110 collitionON:
-   0046 3E 0F         [ 7]  111 	ld a, #0x0F							;;Player Color RED
-   0048 CD 52 00      [17]  112 	call drawIndicator 					;;Draw player :D 
-   004B C9            [10]  113 ret
-                            114 
+                            100 
+                            101 
+                            102 ;;####################################
+                            103 ;; PRIVATE FUNCTIONS
+                            104 ;;####################################
+                            105 
+                            106 
+                            107 
+                            108 ;;====================================
+                            109 ;; Collition Inidcator
+                            110 ;; DESTROY: 
+                            111 ;;====================================
+   003D                     112 calculateCollition:
+   003D 47            [ 4]  113 	ld 		b,a 						;; B = Enemy_X
+   003E C6 01         [ 7]  114 	add 	a, #1 						;; A = Enemy_X + Width
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 8.
 Hexadecimal [16-Bits]
 
 
 
-   004C                     115 collitionOFF:
-   004C 3E 00         [ 7]  116 	ld a, #0x00							;;Player Color RED
-   004E CD 52 00      [17]  117 	call drawIndicator 					;;Draw player :D 
-   0051 C9            [10]  118 ret
-                            119 
-                            120 
-   0052                     121 drawIndicator:
-                            122 	
-   0052 F5            [11]  123 	push af 							;; Save A in Stack
-                            124 	;;Calculate scrren position
-   0053 11 00 C0      [10]  125 	ld 		de, #0xC000					;;Video Memory Pointer
-   0056 3E 00         [ 7]  126 	ld 		 a, #00				;;|
-   0058 4F            [ 4]  127 	ld 		 c, a 						;; C = Player_x
-   0059 3E 00         [ 7]  128 	ld 		 a, #00				;;|
-   005B 47            [ 4]  129 	ld 		 b, a 						;; B = Player_y
-   005C CD 00 00      [17]  130 	call 	cpct_getScreenPtr_asm		;; Get Pointer to Screen (return to HL)
-                            131 	
-                            132 
-                            133 	;; Draw a box
-   005F EB            [ 4]  134 	ex 		de, hl 						;; intercabia ambos valores DE --> to Screen Pointer 
-   0060 F1            [10]  135 	pop 	af							;; A = User Selecter Color
-   0061 01 02 08      [10]  136 	ld 		bc, 	#0x0802				;; 8x8 pixeles
-   0064 CD 00 00      [17]  137 	call 	 cpct_drawSolidBox_asm		;; Llamar dibujar solidBox
-                            138 
-   0067 C9            [10]  139 ret
+   0040 4F            [ 4]  115 	ld 		c, a 						;; C = EX+Enemy_Width (2)
+                            116 	
+                            117 
+   0041 3A 0A 00      [13]  118 	ld 		a, (player_x) 				;; |
+   0044 5F            [ 4]  119 	ld 		e, a 						;; E = Player_X
+   0045 C6 07         [ 7]  120 	add 	a, #7 						;; |
+   0047 57            [ 4]  121 	ld 		d, a 						;; D = PX+Player_With (8)
+                            122 
+                            123 	;;Comprobar si, EX+Enemy_W  esta a la izquierda de Player_X
+                            124 
+   0048 90            [ 4]  125 	sub 	a,b 						;; |
+   0049 28 04         [12]  126 	jr 		z, collitionON				;; if (a==b){collition ON}
+   004B CD 55 00      [17]  127 	call collitionOFF					;; else{collitionOFF}
+   004E C9            [10]  128 ret
+                            129 
+   004F                     130 collitionON:
+   004F 3E 0F         [ 7]  131 	ld a, #0x0F							;;Player Color RED
+   0051 CD 5B 00      [17]  132 	call drawIndicator 					;;Draw player :D 
+   0054 C9            [10]  133 ret
+                            134 
+   0055                     135 collitionOFF:
+   0055 3E 00         [ 7]  136 	ld a, #0x00							;;Player Color RED
+   0057 CD 5B 00      [17]  137 	call drawIndicator 					;;Draw player :D 
+   005A C9            [10]  138 ret
+                            139 
                             140 
-                            141 
-                            142 
-                            143 
-                            144 ;;====================================
-                            145 ;; Controls Jump Momevemnts
-                            146 ;; DESTROY: 
-                            147 ;;====================================
-   0068                     148 jumpControl:
-   0068 3A 0C 00      [13]  149 	ld		 a, (player_jump)			;; A = Player Jump Status
-   006B FE FF         [ 7]  150 	cp 		#-1							;; A == -1? (-1 is not jump)
-   006D C8            [11]  151 	ret 	z							;; If A == -1, not jumping, so ret
+   005B                     141 drawIndicator:
+                            142 	
+   005B F5            [11]  143 	push af 							;; Save A in Stack
+                            144 	;;Calculate scrren position
+   005C 11 00 C0      [10]  145 	ld 		de, #0xC000					;;Video Memory Pointer
+   005F 3E 00         [ 7]  146 	ld 		 a, #00				;;|
+   0061 4F            [ 4]  147 	ld 		 c, a 						;; C = Player_x
+   0062 3E 00         [ 7]  148 	ld 		 a, #00				;;|
+   0064 47            [ 4]  149 	ld 		 b, a 						;; B = Player_y
+   0065 CD 00 00      [17]  150 	call 	cpct_getScreenPtr_asm		;; Get Pointer to Screen (return to HL)
+                            151 	
                             152 
-                            153 	;; Ger Jumps Values
-   006E 21 0D 00      [10]  154 	ld		hl, #jumpTable				;; Load JumpTable Pointer
-   0071 06 00         [ 7]  155 	ld 		 b, #0						;; |
-   0073 4F            [ 4]  156 	ld 		 c, a 						;; BC = A (Offset)
-   0074 09            [11]  157 	add 	hl, bc 						;; HL += BC
+                            153 	;; Draw a box
+   0068 EB            [ 4]  154 	ex 		de, hl 						;; intercabia ambos valores DE --> to Screen Pointer 
+   0069 F1            [10]  155 	pop 	af							;; A = User Selecter Color
+   006A 01 02 08      [10]  156 	ld 		bc, 	#0x0802				;; 8x8 pixeles
+   006D CD 00 00      [17]  157 	call 	 cpct_drawSolidBox_asm		;; Llamar dibujar solidBox
                             158 
-                            159 	;; Check end jump
-   0075 7E            [ 7]  160 	ld 		a, (hl) 					;; A = jump Movement
-   0076 FE 80         [ 7]  161 	cp 		#0x80 						;; Jump value == 0
-   0078 28 10         [12]  162 	jr 		z, end_of_jump 				;; If 0x80 end of jump
+   0070 C9            [10]  159 ret
+                            160 
+                            161 
+                            162 
                             163 
-                            164 	;; Do Jump Movement
-   007A 47            [ 4]  165 	ld 		 b, a						;; B = Fist Position TableJump
-   007B 3A 0B 00      [13]  166 	ld 		 a, (player_y)				;; A = Player_Y
-   007E 80            [ 4]  167 	add 	 b 							;; A += B (Add jump movmenet)
-   007F 32 0B 00      [13]  168 	ld 		(player_y), a 				;; Update Hero_Y value
-                            169 
+                            164 ;;====================================
+                            165 ;; Controls Jump Momevemnts
+                            166 ;; DESTROY: 
+                            167 ;;====================================
+   0071                     168 jumpControl:
+   0071 3A 0E 00      [13]  169 	ld		 a, (player_jump)			;; A = Player Jump Status
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 9.
 Hexadecimal [16-Bits]
 
 
 
-                            170 	;; Increase Player_jump Index
-   0082 3A 0C 00      [13]  171 	ld 		a, (player_jump) 			;; A = Player_jump
-   0085 3C            [ 4]  172 	inc 	a 							;; |
-   0086 32 0C 00      [13]  173 	ld 		(player_jump), a 			;; Player_jump++
-                            174 
-                            175 
-   0089 C9            [10]  176 ret
-                            177 
-                            178 ;; Put -1 in jump status
-   008A                     179 end_of_jump:
-   008A 3E FF         [ 7]  180 	ld 		a, #-1 						;; |
-   008C 32 0C 00      [13]  181 	ld 		(player_jump),a 			;; Player_jump = -1
-   008F C9            [10]  182 ret
+   0074 FE FF         [ 7]  170 	cp 		#-1							;; A == -1? (-1 is not jump)
+   0076 C8            [11]  171 	ret 	z							;; If A == -1, not jumping, so ret
+                            172 
+                            173 	;; Ger Jumps Values
+   0077 21 0F 00      [10]  174 	ld		hl, #jumpTable				;; Load JumpTable Pointer
+   007A 06 00         [ 7]  175 	ld 		 b, #0						;; |
+   007C 4F            [ 4]  176 	ld 		 c, a 						;; BC = A (Offset)
+   007D 09            [11]  177 	add 	hl, bc 						;; HL += BC
+                            178 
+                            179 	;; Check end jump
+   007E 7E            [ 7]  180 	ld 		a, (hl) 					;; A = jump Movement
+   007F FE 80         [ 7]  181 	cp 		#0x80 						;; Jump value == 0
+   0081 28 10         [12]  182 	jr 		z, end_of_jump 				;; If 0x80 end of jump
                             183 
-                            184 ;;====================================
-                            185 ;; Start Player Jump
-                            186 ;; DESTROY: AF
-                            187 ;;====================================
-   0090                     188 startJump:
+                            184 	;; Do Jump Movement
+   0083 47            [ 4]  185 	ld 		 b, a						;; B = Fist Position TableJump
+   0084 3A 0B 00      [13]  186 	ld 		 a, (player_y)				;; A = Player_Y
+   0087 80            [ 4]  187 	add 	 b 							;; A += B (Add jump movmenet)
+   0088 32 0B 00      [13]  188 	ld 		(player_y), a 				;; Update Hero_Y value
                             189 
-   0090 3A 0C 00      [13]  190 	ld 	a, (player_jump)				;; A = Player_jump
-   0093 FE FF         [ 7]  191 	cp 	#-1 							;; A == -1?  Jump is active?	
-   0095 C0            [11]  192 	ret nz 								;; Jump Active, return
-                            193 
-                            194 	;; Jump is Inactive, Active it!
-   0096 3E 00         [ 7]  195 	ld 	a, #0 							 
-   0098 32 0C 00      [13]  196 	ld (player_jump), a 
-   009B C9            [10]  197 ret
-                            198 
-                            199 
-                            200 
-                            201 ;;====================================
-                            202 ;; Move Player Right
-                            203 ;; DESTROY: AF
+                            190 	;; Increase Player_jump Index
+   008B 3A 0E 00      [13]  191 	ld 		a, (player_jump) 			;; A = Player_jump
+   008E 3C            [ 4]  192 	inc 	a 							;; |
+   008F 32 0E 00      [13]  193 	ld 		(player_jump), a 			;; Player_jump++
+                            194 
+                            195 
+   0092 C9            [10]  196 ret
+                            197 
+                            198 ;; Put -1 in jump status
+   0093                     199 end_of_jump:
+   0093 3E FF         [ 7]  200 	ld 		a, #-1 						;; |
+   0095 32 0E 00      [13]  201 	ld 		(player_jump),a 			;; Player_jump = -1
+   0098 C9            [10]  202 ret
+                            203 
                             204 ;;====================================
-   009C                     205 movePlayerRight:
-                            206 
-   009C 3A 0A 00      [13]  207 	ld a, (player_x)					;; A = Player_x
-   009F FE 4E         [ 7]  208 	cp #80-2							;; Check if A is (limit of screen - player width)
-   00A1 28 04         [12]  209 	jr z, dont_move_r						;; Dont move the player
-                            210 
-   00A3 3C            [ 4]  211 		inc a 							;; Else: A++
-   00A4 32 0A 00      [13]  212 		ld (player_x), a 				;; Player_x Update
+                            205 ;; Start Player Jump
+                            206 ;; DESTROY: AF
+                            207 ;;====================================
+   0099                     208 startJump:
+                            209 
+   0099 3A 0E 00      [13]  210 	ld 	a, (player_jump)				;; A = Player_jump
+   009C FE FF         [ 7]  211 	cp 	#-1 							;; A == -1?  Jump is active?	
+   009E C0            [11]  212 	ret nz 								;; Jump Active, return
                             213 
-   00A7                     214 	dont_move_r:
-   00A7 C9            [10]  215 ret
-                            216 
-                            217 
+                            214 	;; Jump is Inactive, Active it!
+   009F 3E 00         [ 7]  215 	ld 	a, #0 							 
+   00A1 32 0E 00      [13]  216 	ld (player_jump), a 
+   00A4 C9            [10]  217 ret
                             218 
-                            219 ;;====================================
-                            220 ;; Move Player Left
-                            221 ;; DESTROY: AF
-                            222 ;;====================================
-   00A8                     223 movePlayerLeft:
-                            224 
+                            219 
+                            220 
+                            221 ;;====================================
+                            222 ;; Move Player Right
+                            223 ;; DESTROY: AF
+                            224 ;;====================================
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 10.
 Hexadecimal [16-Bits]
 
 
 
-   00A8 3A 0A 00      [13]  225 	ld a, (player_x)					;; A == Player_x
-   00AB FE 00         [ 7]  226 	cp #0								;; Check if player (screen rigth limit)
-   00AD 28 04         [12]  227 	jr z, dont_move_l
-                            228 	 
-   00AF 3D            [ 4]  229 		dec a 							;; Else: A-- (Player_X--)
-   00B0 32 0A 00      [13]  230 		ld (player_x), a 				;; Player_x Update 
-                            231 
-   00B3                     232 	dont_move_l:
-   00B3 C9            [10]  233 ret
-                            234 
-                            235 ;;====================================
-                            236 ;; Handle Events
-                            237 ;; DESTROY: AF, BC, DE, HL
-                            238 ;;====================================
-   00B4                     239 HandleEvent:
-   00B4 CD BD 00      [17]  240 	call check_KeyD_pressed
-   00B7 CD CE 00      [17]  241 	call check_KeyA_pressed
-   00BA CD DF 00      [17]  242 	call check_KeyW_pressed
-                            243 	
-   00BD                     244 		check_KeyD_pressed:
-   00BD CD 00 00      [17]  245 			call cpct_scanKeyboard_asm			;; Scan all keyboard
-   00C0 21 07 20      [10]  246 			ld hl, #Key_D 						;; HL = KEY 'D' Code
-   00C3 CD 00 00      [17]  247 			call cpct_isKeyPressed_asm			;; Check for key 'D' is presed
-   00C6 FE 00         [ 7]  248 			cp #0 								;; Check A == 0
-   00C8 28 03         [12]  249 			jr z, d_not_pressed					;; Jump if A == 0 ('D' not pressed)
-                            250 				
-   00CA CD 9C 00      [17]  251 				call movePlayerRight			;; 'D' is pressed
-                            252 		
-   00CD                     253 			d_not_pressed:						;; Do nothing
-                            254 		
-   00CD C9            [10]  255 		ret
-                            256 
-   00CE                     257 		check_KeyA_pressed:
-   00CE CD 00 00      [17]  258 			call cpct_scanKeyboard_asm			;; Scan all keyboard
-   00D1 21 08 20      [10]  259 			ld hl, #Key_A 						;; HL = KEY 'A' Code
-   00D4 CD 00 00      [17]  260 			call cpct_isKeyPressed_asm			;; Check for key 'A' is presed
-   00D7 FE 00         [ 7]  261 			cp #0 								;; Check A == 0
-   00D9 28 03         [12]  262 			jr z, a_not_pressed					;; Jump if A == 0 ('A' not pressed)
-                            263 		
-   00DB CD A8 00      [17]  264 				call movePlayerLeft				;; 'A' is pressed
-                            265 		
-   00DE                     266 			a_not_pressed:						;; Do nothing
-                            267 
-   00DE C9            [10]  268 		ret
-                            269 
-   00DF                     270 		check_KeyW_pressed:
-   00DF CD 00 00      [17]  271 			call cpct_scanKeyboard_asm			;; Scan all keyboard
-   00E2 21 07 08      [10]  272 			ld hl, #Key_W 						;; HL = KEY 'W' Code
-   00E5 CD 00 00      [17]  273 			call cpct_isKeyPressed_asm			;; Check for key 'W' is presed
-   00E8 FE 00         [ 7]  274 			cp #0 								;; Check A == 0
-   00EA 28 03         [12]  275 			jr z, w_not_pressed					;; Jump if A == 0 ('W' not pressed)
-                            276 		
-   00EC CD 90 00      [17]  277 				call startJump					;; 'W' is pressed
-                            278 		
-   00EF                     279 			w_not_pressed:						;; Do nothing
+   00A5                     225 movePlayerRight:
+                            226 
+   00A5 3A 0A 00      [13]  227 	ld a, (player_x)					;; A = Player_x
+   00A8 FE 4E         [ 7]  228 	cp #80-2							;; Check if A is (limit of screen - player width)
+   00AA 28 04         [12]  229 	jr z, dont_move_r						;; Dont move the player
+                            230 
+   00AC 3C            [ 4]  231 		inc a 							;; Else: A++
+   00AD 32 0A 00      [13]  232 		ld (player_x), a 				;; Player_x Update
+                            233 
+   00B0                     234 	dont_move_r:
+   00B0 C9            [10]  235 ret
+                            236 
+                            237 
+                            238 
+                            239 ;;====================================
+                            240 ;; Move Player Left
+                            241 ;; DESTROY: AF
+                            242 ;;====================================
+   00B1                     243 movePlayerLeft:
+                            244 
+   00B1 3A 0A 00      [13]  245 	ld a, (player_x)					;; A == Player_x
+   00B4 FE 00         [ 7]  246 	cp #0								;; Check if player (screen rigth limit)
+   00B6 28 04         [12]  247 	jr z, dont_move_l
+                            248 	 
+   00B8 3D            [ 4]  249 		dec a 							;; Else: A-- (Player_X--)
+   00B9 32 0A 00      [13]  250 		ld (player_x), a 				;; Player_x Update 
+                            251 
+   00BC                     252 	dont_move_l:
+   00BC C9            [10]  253 ret
+                            254 
+                            255 ;;====================================
+                            256 ;; Handle Events
+                            257 ;; DESTROY: AF, BC, DE, HL
+                            258 ;;====================================
+   00BD                     259 HandleEvent:
+   00BD CD C6 00      [17]  260 	call check_KeyD_pressed
+   00C0 CD D7 00      [17]  261 	call check_KeyA_pressed
+   00C3 CD E8 00      [17]  262 	call check_KeyW_pressed
+                            263 	
+   00C6                     264 		check_KeyD_pressed:
+   00C6 CD 00 00      [17]  265 			call cpct_scanKeyboard_asm			;; Scan all keyboard
+   00C9 21 07 20      [10]  266 			ld hl, #Key_D 						;; HL = KEY 'D' Code
+   00CC CD 00 00      [17]  267 			call cpct_isKeyPressed_asm			;; Check for key 'D' is presed
+   00CF FE 00         [ 7]  268 			cp #0 								;; Check A == 0
+   00D1 28 03         [12]  269 			jr z, d_not_pressed					;; Jump if A == 0 ('D' not pressed)
+                            270 				
+   00D3 CD A5 00      [17]  271 				call movePlayerRight			;; 'D' is pressed
+                            272 		
+   00D6                     273 			d_not_pressed:						;; Do nothing
+                            274 		
+   00D6 C9            [10]  275 		ret
+                            276 
+   00D7                     277 		check_KeyA_pressed:
+   00D7 CD 00 00      [17]  278 			call cpct_scanKeyboard_asm			;; Scan all keyboard
+   00DA 21 08 20      [10]  279 			ld hl, #Key_A 						;; HL = KEY 'A' Code
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 11.
 Hexadecimal [16-Bits]
 
 
 
-                            280 
-   00EF C9            [10]  281 		ret
-                            282 
-                            283 
-   00F0 C9            [10]  284 ret
-                            285 ;;====================================
-                            286 ;; Draw Player
-                            287 ;; INPUTS:
-                            288 ;; 		A ==> Color Patern
-                            289 ;; DESTROY: AF, BC, DE, HL
-                            290 ;;====================================
-   00F1                     291 drawPlayer:
-                            292 	
-   00F1 F5            [11]  293 	push af 							;; Save A in Stack
-                            294 	;;Calculate scrren position
-   00F2 11 00 C0      [10]  295 	ld 		de, #0xC000					;;Video Memory Pointer
-   00F5 3A 0A 00      [13]  296 	ld 		 a, (player_x)				;;|
-   00F8 4F            [ 4]  297 	ld 		 c, a 						;; C = Player_x
-   00F9 3A 0B 00      [13]  298 	ld 		 a, (player_y)				;;|
-   00FC 47            [ 4]  299 	ld 		 b, a 						;; B = Player_y
-   00FD CD 00 00      [17]  300 	call 	cpct_getScreenPtr_asm		;; Get Pointer to Screen (return to HL)
-                            301 	
+   00DD CD 00 00      [17]  280 			call cpct_isKeyPressed_asm			;; Check for key 'A' is presed
+   00E0 FE 00         [ 7]  281 			cp #0 								;; Check A == 0
+   00E2 28 03         [12]  282 			jr z, a_not_pressed					;; Jump if A == 0 ('A' not pressed)
+                            283 		
+   00E4 CD B1 00      [17]  284 				call movePlayerLeft				;; 'A' is pressed
+                            285 		
+   00E7                     286 			a_not_pressed:						;; Do nothing
+                            287 
+   00E7 C9            [10]  288 		ret
+                            289 
+   00E8                     290 		check_KeyW_pressed:
+   00E8 CD 00 00      [17]  291 			call cpct_scanKeyboard_asm			;; Scan all keyboard
+   00EB 21 07 08      [10]  292 			ld hl, #Key_W 						;; HL = KEY 'W' Code
+   00EE CD 00 00      [17]  293 			call cpct_isKeyPressed_asm			;; Check for key 'W' is presed
+   00F1 FE 00         [ 7]  294 			cp #0 								;; Check A == 0
+   00F3 28 03         [12]  295 			jr z, w_not_pressed					;; Jump if A == 0 ('W' not pressed)
+                            296 		
+   00F5 CD 99 00      [17]  297 				call startJump					;; 'W' is pressed
+                            298 		
+   00F8                     299 			w_not_pressed:						;; Do nothing
+                            300 
+   00F8 C9            [10]  301 		ret
                             302 
-                            303 	;; Draw a box
-   0100 EB            [ 4]  304 	ex 		de, hl 						;; intercabia ambos valores DE --> to Screen Pointer 
-   0101 F1            [10]  305 	pop 	af							;; A = User Selecter Color
-   0102 01 02 08      [10]  306 	ld 		bc, 	#0x0802				;; 8x8 pixeles
-   0105 CD 00 00      [17]  307 	call 	 cpct_drawSolidBox_asm		;; Llamar dibujar solidBox
-                            308 
-   0108 C9            [10]  309 ret
-                            310 
-                            311 
-                            312 ;;====================================
-                            313 ;; Draw Floor
-                            314 ;; DESTROY: AF, BC, DE, HL
-                            315 ;;====================================
-   0109                     316 drawFloor:
-                            317 	;;Screen Pointer
-   0109 11 00 C0      [10]  318 	ld 		de, #0xC000					;;Video Memory Pointer
-   010C 3A 1A 00      [13]  319 	ld 		 a, (floor_x)				;;|
-   010F 4F            [ 4]  320 	ld 		 c, a 						;; C = Floor_X
-   0110 3A 1B 00      [13]  321 	ld		 a, (floor_y)				;;|
-   0113 47            [ 4]  322 	ld		 b, a 						;; B = Floor_Y
-   0114 CD 00 00      [17]  323 	call 	cpct_getScreenPtr_asm 		;; Get Pointer to Screen (return to HL)
-                            324 	
-                            325 	;; Draw a Floor
-   0117 EB            [ 4]  326 	ex		de, hl 						;; Change DE <==> HL (Screen pointer)
-   0118 3E F0         [ 7]  327 	ld		 a, #0xF0					;; Select Color (F0 ==> Yellow)
-   011A 01 40 64      [10]  328 	ld 		bc, #0x6440					;; ?x? pixel width
-   011D CD 00 00      [17]  329 	call 	cpct_drawSolidBox_asm
+                            303 
+   00F9 C9            [10]  304 ret
+                            305 ;;====================================
+                            306 ;; Draw Player
+                            307 ;; INPUTS:
+                            308 ;; 		A ==> Color Patern
+                            309 ;; DESTROY: AF, BC, DE, HL
+                            310 ;;====================================
+   00FA                     311 drawPlayer:
+                            312 	
+   00FA F5            [11]  313 	push af 							;; Save A in Stack
+                            314 	;;Calculate scrren position
+   00FB 11 00 C0      [10]  315 	ld 		de, #0xC000					;;Video Memory Pointer
+   00FE 3A 0A 00      [13]  316 	ld 		 a, (player_x)				;;|
+   0101 4F            [ 4]  317 	ld 		 c, a 						;; C = Player_x
+   0102 3A 0B 00      [13]  318 	ld 		 a, (player_y)				;;|
+   0105 47            [ 4]  319 	ld 		 b, a 						;; B = Player_y
+   0106 CD 00 00      [17]  320 	call 	cpct_getScreenPtr_asm		;; Get Pointer to Screen (return to HL)
+                            321 	
+                            322 
+                            323 	;; Draw a box
+   0109 EB            [ 4]  324 	ex 		de, hl 						;; intercabia ambos valores DE --> to Screen Pointer 
+   010A F1            [10]  325 	pop 	af							;; A = User Selecter Color
+   010B 01 02 08      [10]  326 	ld 		bc, 	#0x0802				;; 8x8 pixeles
+   010E CD 00 00      [17]  327 	call 	 cpct_drawSolidBox_asm		;; Llamar dibujar solidBox
+                            328 
+   0111 C9            [10]  329 ret
                             330 
-   0120 C9            [10]  331 ret
-                            332 
-                            333 
-                            334 
+                            331 
+                            332 ;;====================================
+                            333 ;; Draw Floor
+                            334 ;; DESTROY: AF, BC, DE, HL
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 12.
 Hexadecimal [16-Bits]
 
 
 
-                            335 
+                            335 ;;====================================
+   0112                     336 drawFloor:
+                            337 	;;Screen Pointer
+   0112 11 00 C0      [10]  338 	ld 		de, #0xC000					;;Video Memory Pointer
+   0115 3A 1C 00      [13]  339 	ld 		 a, (floor_x)				;;|
+   0118 4F            [ 4]  340 	ld 		 c, a 						;; C = Floor_X
+   0119 3A 1D 00      [13]  341 	ld		 a, (floor_y)				;;|
+   011C 47            [ 4]  342 	ld		 b, a 						;; B = Floor_Y
+   011D CD 00 00      [17]  343 	call 	cpct_getScreenPtr_asm 		;; Get Pointer to Screen (return to HL)
+                            344 	
+                            345 	;; Draw a Floor
+   0120 EB            [ 4]  346 	ex		de, hl 						;; Change DE <==> HL (Screen pointer)
+   0121 3E F0         [ 7]  347 	ld		 a, #0xF0					;; Select Color (F0 ==> Yellow)
+   0123 01 40 64      [10]  348 	ld 		bc, #0x6440					;; ?x? pixel width
+   0126 CD 00 00      [17]  349 	call 	cpct_drawSolidBox_asm
+                            350 
+   0129 C9            [10]  351 ret
+                            352 
+                            353 
+                            354 
+                            355 

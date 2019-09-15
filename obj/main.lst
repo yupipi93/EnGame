@@ -22,7 +22,8 @@ Hexadecimal [16-Bits]
                               8 .globl	player_update
                               9 .globl	player_draw
                              10 .globl 	player_collition
-                             11 
+                             11 .globl  player_getPtrHL
+                             12 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
@@ -36,8 +37,8 @@ Hexadecimal [16-Bits]
                               5 .globl	enemy_erase
                               6 .globl	enemy_update
                               7 .globl	enemy_draw
-                              8 .globl 	enemy_getX
-                              9 .globl 	enemy_getX
+                              8 .globl 	enemy_getX ;;deprecated
+                              9 .globl 	enemy_checkCollision
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
 Hexadecimal [16-Bits]
 
@@ -84,26 +85,39 @@ Hexadecimal [16-Bits]
    000C CD 00 00      [17]   30 	call player_update					;; Player Update
    000F CD 00 00      [17]   31 	call enemy_update					;; Enemy update
                              32 
-   0012 CD 00 00      [17]   33 	call player_draw					;; Draw the Player
-   0015 CD 00 00      [17]   34 	call enemy_draw						;; Enemy draw
-                             35 
-   0018 CD 00 00      [17]   36 	call enemy_getX 					;; B = Enemy_X 
-   001B CD 00 00      [17]   37 	call player_collition				;; Compare Player_X == Enemy_X --> RED	
-                             38 
-                             39 ;;=======================
-                             40 ;; ENEMY
-                             41 ;;=======================
-                             42  	
+   0012 CD 00 00      [17]   33 	call player_getPtrHL
+   0015 CD 00 00      [17]   34 	call enemy_checkCollision
+   0018 32 00 C0      [13]   35 	ld (0xC000), a 						;; Draw collision led
+   001B 32 01 C0      [13]   36 	ld (0xC001), a 						;; Draw collision led
+   001E 32 02 C0      [13]   37 	ld (0xC002), a 						;; Draw collision led
+   0021 32 03 C0      [13]   38 	ld (0xC003), a 						;; Draw collision led
+                             39 
+                             40 
+   0024 CD 00 00      [17]   41 	call player_draw					;; Draw the Player
+   0027 CD 00 00      [17]   42 	call enemy_draw						;; Enemy draw
                              43 
-                             44 ;;=======================
-                             45 ;; V-SYNC
-                             46 ;;=======================
-   001E CD 00 00      [17]   47 	call cpct_waitVSYNC_asm 			;;Wait for Raster outside
-                             48 
-                             49 
-   0021 18 DD         [12]   50 	jr _main
+                             44 	;call enemy_getX 					;; B = Enemy_X 		deprecated
+                             45 	;call player_collition				;; Compare Player_X == Enemy_X --> RED	deprecated
+                             46 
+                             47 ;;=======================
+                             48 ;; ENEMY
+                             49 ;;=======================
+                             50  	
                              51 
-                             52 
-                             53 
-                             54 
-                             55 
+                             52 ;;=======================
+                             53 ;; V-SYNC
+                             54 ;;=======================
+   002A CD 00 00      [17]   55 	call cpct_waitVSYNC_asm 			;;Wait for Raster outside
+                             56 
+                             57 
+   002D 18 D1         [12]   58 	jr _main
+                             59 
+                             60 
+                             61 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 6.
+Hexadecimal [16-Bits]
+
+
+
+                             62 
+                             63 

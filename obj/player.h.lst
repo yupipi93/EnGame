@@ -13,4 +13,5 @@ Hexadecimal [16-Bits]
                               8 .globl	player_update
                               9 .globl	player_draw
                              10 .globl 	player_collition
-                             11 
+                             11 .globl  player_getPtrHL
+                             12 

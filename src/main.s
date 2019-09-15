@@ -30,11 +30,19 @@ _main::
 	call player_update					;; Player Update
 	call enemy_update					;; Enemy update
 
+	call player_getPtrHL
+	call enemy_checkCollision
+	ld (0xC000), a 						;; Draw collision led
+	ld (0xC001), a 						;; Draw collision led
+	ld (0xC002), a 						;; Draw collision led
+	ld (0xC003), a 						;; Draw collision led
+
+
 	call player_draw					;; Draw the Player
 	call enemy_draw						;; Enemy draw
 
-	call enemy_getX 					;; B = Enemy_X 
-	call player_collition				;; Compare Player_X == Enemy_X --> RED	
+	;call enemy_getX 					;; B = Enemy_X 		deprecated
+	;call player_collition				;; Compare Player_X == Enemy_X --> RED	deprecated
 
 ;;=======================
 ;; ENEMY

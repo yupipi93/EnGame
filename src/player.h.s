@@ -8,4 +8,5 @@
 .globl	player_update
 .globl	player_draw
 .globl 	player_collition
+.globl  player_getPtrHL
 

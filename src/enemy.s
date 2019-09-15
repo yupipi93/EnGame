@@ -14,6 +14,9 @@
 ;; enemy Data
 enemy_x: 		.db #80-1		;;End of screen
 enemy_y: 		.db #82
+enemy_w: 		.db #1 			;;Whidth
+enemy_h: 		.db #4 			;;Height
+
 direccion:		.db #1			;; 1 = left, 2 = right
 
 
@@ -23,6 +26,67 @@ direccion:		.db #1			;; 1 = left, 2 = right
 ;;####################################
 ;; PUBLIC FUNCTIONS ::
 ;;####################################
+
+;;====================================
+;; Check collition
+;; Inputs:
+;;		HL: Points to the oder entity to check collition
+;; Return:
+;; 		XXXXXXXX
+;;====================================
+enemy_checkCollision::
+
+	;;COSISION IN X:
+	call ifPlayerLeft
+	
+	
+ret
+
+	ifPlayerLeft:
+	;; if (EX+EW <= PX) collision_off
+	;;  	(EX+EW - PX <= 0) 
+	ld 		a, (enemy_x) 			;; Enemy_X
+	ld 		c, a 					;; +
+	ld  	a, (enemy_w) 			;; Enemy_Whidth
+	add 	c 						;; -
+	sub 	(hl) 					;; Player_X???
+	jr 		z, collision_off 		;; if(Resultado == 0) NOT COLLITION
+	jp 		m, collision_off 		;; if(Resultado < 0) NOT COLLITION
+	call 	ifPlayerRigth 			;;
+	ret
+
+
+	ifPlayerRigth:	
+	;; IF (PX+PWE <= EX) --> (PX+PW-EX <= 0)
+
+	ld 		a, (hl) 				;; Player_X
+	inc 	hl 						;; HL++ (HL+1 = Player_Y)
+	inc 	hl 						;; HL++ (HL+2 = Player_Width)
+	add 	(hl) 					;; Player_X + Player_Whidth
+	ld 		c, a 					;;
+	ld 		a, (enemy_x) 			;; Enemy_X
+	ld 		b, a 					;; B = Enemy_X
+	ld 		a, c 					;; A = Player_X + Player_Whidth
+	sub 	b   					;; Player_X + Player_Whidth  - Enemy_X
+	jr 		z, collision_off 		;; if(Resultado == 0) NOT COLLITION
+	jp 		m, collision_off 		;; if(Resultado < 0) NOT COLLITION
+	call 	collision_on
+	ret
+
+;; Other Posibilities Y
+
+	collision_on:
+	;; Collision
+    	ld 		a, #0x0F
+	ret
+
+	;; No collision
+	collision_off:
+		ld 		a, #00
+	ret
+
+
+
 
 
 ;;====================================
@@ -67,6 +131,8 @@ ret
 ;;####################################
 ;; PRIVATE FUNCTIONS
 ;;####################################
+
+
 
 ;;====================================
 ;; Move enemy right-left
