@@ -1,6 +1,4 @@
 .area _CODE 
-
-
 .include "cpctelera.h.s"
 
 
@@ -28,61 +26,103 @@ direccion:		.db #1			;; 1 = left, 2 = right
 ;;####################################
 
 ;;====================================
+;; Gets a pointer to Enemy data in DE
+;; DESTROY: DE
+;; RETURN: 
+;; 		DE: Pointer to Player data
+;;====================================
+enemy_getPtrDE::
+	ld 	de, #enemy_x					;; DE: pointer to player data
+ret
+
+;;====================================
 ;; Check collition
 ;; Inputs:
 ;;		HL: Points to the oder entity to check collition
 ;; Return:
-;; 		XXXXXXXX
+;; 		A: #0x0F = ON, #00 = OFF
 ;;====================================
 enemy_checkCollision::
+	ld 	e, #0 				;; E = Collisions_Counter
+	;; Collision in X:
+	call ifPlayerLeft 		;; Check if player is Left, if not (E++)
+	call ifPlayerRigth		;; Check if player is Right, if not (E++)
+	;; Collision in Y:
+	call ifPlayerUp 		;; Check Collition in Y (E++)
+	;;call ifPlauerDown 		;; Check Collition in Y (E++)
 
-	;;COSISION IN X:
-	call ifPlayerLeft
-	
-	
+	ld 	a, e 				;; |
+	cp 	#3 					;; if Collisions_Counter == 2 (not left + not right)
+	jr	z,led_on 			;; LED_ON
+	call led_off 			;; Then LED_OFF
 ret
 
+;; Collision
+led_on:
+	ld 		a, #0x0F
+ret
+
+;; No collision
+led_off:
+	ld 		a, #00
+ret
+	
+	
+
+
 	ifPlayerLeft:
-	;; if (EX+EW <= PX) collision_off
-	;;  	(EX+EW - PX <= 0) 
-	ld 		a, (enemy_x) 			;; Enemy_X
-	ld 		c, a 					;; +
-	ld  	a, (enemy_w) 			;; Enemy_Whidth
-	add 	c 						;; -
-	sub 	(hl) 					;; Player_X???
-	jr 		z, collision_off 		;; if(Resultado == 0) NOT COLLITION
-	jp 		m, collision_off 		;; if(Resultado < 0) NOT COLLITION
-	call 	ifPlayerRigth 			;;
+		;; if (EX+EW <= PX) collision_off
+		;;  	(EX+EW - PX <= 0) 
+		ld 		a, (enemy_x) 			;; Enemy_X
+		ld 		c, a 					;; +
+		ld  	a, (enemy_w) 			;; Enemy_Whidth
+		add 	c 						;; -
+		sub 	(hl) 					;; Player_X???
+		jr 		z, collision_off 		;; if(Resultado == 0) NOT COLLITION
+		jp 		m, collision_off 		;; if(Resultado < 0) NOT COLLITION
+		call 	collision_on			;; COLLISION
 	ret
 
 
 	ifPlayerRigth:	
-	;; IF (PX+PWE <= EX) --> (PX+PW-EX <= 0)
-
-	ld 		a, (hl) 				;; Player_X
-	inc 	hl 						;; HL++ (HL+1 = Player_Y)
-	inc 	hl 						;; HL++ (HL+2 = Player_Width)
-	add 	(hl) 					;; Player_X + Player_Whidth
-	ld 		c, a 					;;
-	ld 		a, (enemy_x) 			;; Enemy_X
-	ld 		b, a 					;; B = Enemy_X
-	ld 		a, c 					;; A = Player_X + Player_Whidth
-	sub 	b   					;; Player_X + Player_Whidth  - Enemy_X
-	jr 		z, collision_off 		;; if(Resultado == 0) NOT COLLITION
-	jp 		m, collision_off 		;; if(Resultado < 0) NOT COLLITION
-	call 	collision_on
+		;; IF (PX+PWE <= EX) --> (PX+PW-EX <= 0)
+		ld 		a, (hl) 				;; Player_X
+		inc 	hl 						;; HL++ (HL+1 = Player_Y)
+		inc 	hl 						;; HL++ (HL+2 = Player_Width)
+		add 	(hl) 					;; Player_X + Player_Whidth
+		ld 		c, a 					;;
+		ld 		a, (enemy_x) 			;; Enemy_X
+		ld 		b, a 					;; B = Enemy_X
+		ld 		a, c 					;; A = Player_X + Player_Whidth
+		sub 	b   					;; Player_X + Player_Whidth  - Enemy_X
+		jr 		z, collision_off 		;; if(Resultado == 0) NOT COLLITION
+		jp 		m, collision_off 		;; if(Resultado < 0) NOT COLLITION
+		call 	collision_on
 	ret
 
-;; Other Posibilities Y
+	;; Other Posibilities Y
+
+	ifPlayerUp:
+    	;; If(EY >= PY+PH) --> if(EY - PY+PH >= 0)
+    	inc 	hl 					;; | (After HL+2) Load Player DATA (X,Y,W,H)
+    	ld 		a, (hl)  			;; A = Player_H
+    	dec 	hl 					;; HL--
+    	dec 	hl 					;; HL-- = Player_Y
+    	add 	(hl) 				;; |
+    	ld 		c, a 				;; C = Player_H + Player_Y
+    	ld 		a, (enemy_y) 		;; |
+    	sub 	c 					;; Enemy_Y - C
+    	jr 		z,collision_off 	;; if (== 0) NOT COLLISION
+    	jp 		p,collision_off     ;; if (<) 0) NOT COLLISION
+    	call 	collision_on
+	ret
 
 	collision_on:
-	;; Collision
-    	ld 		a, #0x0F
+    	inc 	e
 	ret
 
-	;; No collision
 	collision_off:
-		ld 		a, #00
+		;;Nothing
 	ret
 
 
@@ -117,13 +157,7 @@ enemy_draw::
 
 ret
 
-;;====================================
-;; Draw the enemy
-;;====================================
-enemy_getX::
 
-	ld a, (enemy_x)						;; B = Enemy_X
-ret
 
 
 

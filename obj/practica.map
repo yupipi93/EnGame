@@ -9,45 +9,44 @@ Area                                    Addr        Size        Decimal Bytes (A
       -----  --------------------------------   ------------------------
      00000000  .__.ABS.                           cpct_keyboard
      00000000  l__DATA                         
-     0000031C  l__CODE                         
+     00000345  l__CODE                         
      00004000  s__CODE                         
-     0000431C  s__DATA                         
+     00004345  s__DATA                         
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    0000031C =         796. bytes (REL,CON)
+_CODE                               00004000    00000345 =         837. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00004000  _main                              
-     00004034  enemy_checkCollision               
-     00004064  enemy_erase                        
-     0000406A  enemy_update                       
-     0000406E  enemy_draw                         
-     00004074  enemy_getX                         
-     000040D4  _cpct_keyboardStatusBuffer         cpct_keyboard
-     000040F2  draw_floor                         cpct_keyboard
-     000040F6  player_erase                       cpct_keyboard
-     000040FC  player_update                      cpct_keyboard
-     00004103  player_draw                        cpct_keyboard
-     00004109  player_getPtrHL                    cpct_keyboard
-     0000410D  player_collition                   cpct_keyboard
-     000041FE  _cpct_isKeyPressed                 cpct_keyboard
-     000041FE  cpct_isKeyPressed_asm              cpct_keyboard
-     0000420A  _cpct_waitVSYNC                    cpct_video
-     0000420A  cpct_waitVSYNC_asm                 cpct_video
-     00004212  _cpct_disableFirmware              cpct_firmware
-     00004212  _cpct_removeInterruptHandler       cpct_firmware
-     00004212  cpct_disableFirmware_asm           cpct_firmware
-     00004212  cpct_removeInterruptHandler_asm    cpct_firmware
-     00004222  cpct_drawSolidBox_asm              cpct_sprites
-     000042CE  _cpct_mode_rom_status              cpct_firmware
-     000042CF  cpct_getScreenPtr_asm              cpct_video
-     000042EB  _cpct_scanKeyboard                 cpct_keyboard
-     000042EB  cpct_scanKeyboard_asm              cpct_keyboard
+     00004004  _main                              
+     00004033  checkCollision                     
+     0000408B  enemy_getPtrDE                     
+     0000408F  enemy_checkCollision               
+     000040E5  enemy_erase                        
+     000040EB  enemy_update                       
+     000040EF  enemy_draw                         
+     00004151  _cpct_keyboardStatusBuffer         cpct_keyboard
+     0000416F  player_erase                       cpct_keyboard
+     00004175  player_update                      cpct_keyboard
+     0000417C  player_draw                        cpct_keyboard
+     00004182  player_getPtrHL                    cpct_keyboard
+     00004227  _cpct_isKeyPressed                 cpct_keyboard
+     00004227  cpct_isKeyPressed_asm              cpct_keyboard
+     00004233  _cpct_waitVSYNC                    cpct_video
+     00004233  cpct_waitVSYNC_asm                 cpct_video
+     0000423B  _cpct_disableFirmware              cpct_firmware
+     0000423B  _cpct_removeInterruptHandler       cpct_firmware
+     0000423B  cpct_disableFirmware_asm           cpct_firmware
+     0000423B  cpct_removeInterruptHandler_asm    cpct_firmware
+     0000424B  cpct_drawSolidBox_asm              cpct_sprites
+     000042F7  _cpct_mode_rom_status              cpct_firmware
+     000042F8  cpct_getScreenPtr_asm              cpct_video
+     00004314  _cpct_scanKeyboard                 cpct_keyboard
+     00004314  cpct_scanKeyboard_asm              cpct_keyboard
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
 
@@ -57,6 +56,7 @@ obj/player.h.rel                          [  ]
 obj/cpctelera.h.rel                       [  ]
 obj/main.rel                              [  ]
 obj/enemy.h.rel                           [  ]
+obj/collision.rel                         [  ]
 obj/enemy.rel                             [  ]
 obj/player.rel                            [ cpct_keyboard ]
 

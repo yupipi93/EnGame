@@ -4,7 +4,7 @@ Hexadecimal [16-Bits]
 Symbol Table
 
     .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
-    .__.H$L.=  0000 L   |   0 HandleEv   00BD R   |     Joy0_Dow=  0209 
+    .__.H$L.=  0000 L   |   0 HandleEv   0081 R   |     Joy0_Dow=  0209 
     Joy0_Fir=  1009     |     Joy0_Fir=  2009     |     Joy0_Fir=  4009 
     Joy0_Lef=  0409     |     Joy0_Rig=  0809     |     Joy0_Up =  0109 
     Joy1_Dow=  0206     |     Joy1_Fir=  1006     |     Joy1_Fir=  2006 
@@ -34,24 +34,22 @@ Symbol Table
     Key_T   =  0806     |     Key_Tab =  1008     |     Key_U   =  0405 
     Key_V   =  8006     |     Key_W   =  0807     |     Key_X   =  8007 
     Key_Y   =  0805     |     Key_Z   =  8008     |   0 _cpct_ke   0000 GR
-  0 a_not_pr   00E7 R   |   0 calculat   003D R   |   0 check_Ke   00D7 R
-  0 check_Ke   00C6 R   |   0 check_Ke   00E8 R   |   0 collitio   0055 R
-  0 collitio   004F R   |     cpct_dis   **** GX  |     cpct_dra   **** GX
+  0 a_not_pr   00AB R   |   0 check_Ke   009B R   |   0 check_Ke   008A R
+  0 check_Ke   00AC R   |     cpct_dis   **** GX  |     cpct_dra   **** GX
     cpct_get   **** GX  |     cpct_isK   **** GX  |     cpct_sca   **** GX
-    cpct_wai   **** GX  |   0 d_not_pr   00D6 R   |   0 dont_mov   00BC R
-  0 dont_mov   00B0 R   |   0 drawFloo   0112 R   |   0 drawIndi   005B R
-  0 drawPlay   00FA R   |   0 draw_flo   001E GR  |   0 end_of_j   0093 R
-  0 floor_x    001C R   |   0 floor_y    001D R   |   0 jumpCont   0071 R
-  0 jumpTabl   000F R   |   0 movePlay   00B1 R   |   0 movePlay   00A5 R
-  0 player_c   0039 GR  |   0 player_d   002F GR  |   0 player_e   0022 GR
-  0 player_g   0035 GR  |   0 player_h   000D R   |   0 player_j   000E R
-  0 player_u   0028 GR  |   0 player_w   000C R   |   0 player_x   000A R
-  0 player_y   000B R   |   0 startJum   0099 R   |   0 w_not_pr   00F8 R
+    cpct_wai   **** GX  |   0 d_not_pr   009A R   |   0 dont_mov   0080 R
+  0 dont_mov   0074 R   |   0 drawPlay   00BE R   |   0 end_of_j   0057 R
+  0 floor_x    001C R   |   0 floor_y    001D R   |   0 jumpCont   0035 R
+  0 jumpTabl   000F R   |   0 movePlay   0075 R   |   0 movePlay   0069 R
+  0 player_d   002B GR  |   0 player_e   001E GR  |   0 player_g   0031 GR
+  0 player_h   000D R   |   0 player_j   000E R   |   0 player_u   0024 GR
+  0 player_w   000C R   |   0 player_x   000A R   |   0 player_y   000B R
+  0 startJum   005D R   |   0 w_not_pr   00BC R
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size  12A   flags    0
+   0 _CODE      size   D6   flags    0
 

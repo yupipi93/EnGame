@@ -11,6 +11,7 @@ obj/player.h.rel
 obj/cpctelera.h.rel
 obj/main.rel
 obj/enemy.h.rel
+obj/collision.rel
 obj/enemy.rel
 obj/player.rel
 

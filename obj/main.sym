@@ -4,11 +4,11 @@ Hexadecimal [16-Bits]
 Symbol Table
 
     .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
-    .__.H$L.=  0000 L   |   0 _main      0000 GR  |     cpct_dis   **** GX
-    cpct_dra   **** GX  |     cpct_get   **** GX  |     cpct_isK   **** GX
-    cpct_sca   **** GX  |     cpct_wai   **** GX  |     draw_flo   **** GX
+    .__.H$L.=  0000 L   |   0 _main      0004 GR  |     checkCol   **** GX
+    cpct_dis   **** GX  |     cpct_dra   **** GX  |     cpct_get   **** GX
+    cpct_isK   **** GX  |     cpct_sca   **** GX  |     cpct_wai   **** GX
     enemy_ch   **** GX  |     enemy_dr   **** GX  |     enemy_er   **** GX
-    enemy_ge   **** GX  |     enemy_up   **** GX  |     player_c   **** GX
+    enemy_ge   **** GX  |     enemy_up   **** GX  |   0 initiali   0000 R
     player_d   **** GX  |     player_e   **** GX  |     player_g   **** GX
     player_u   **** GX
 
@@ -17,6 +17,6 @@ Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size   2F   flags    0
+   0 _CODE      size   33   flags    0
    1 _DATA      size    0   flags    0
 

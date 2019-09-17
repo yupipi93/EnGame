@@ -10,5 +10,5 @@ Hexadecimal [16-Bits]
                               5 .globl	enemy_erase
                               6 .globl	enemy_update
                               7 .globl	enemy_draw
-                              8 .globl 	enemy_getX ;;deprecated
-                              9 .globl 	enemy_checkCollision
+                              8 .globl 	enemy_checkCollision
+                              9 .globl 	enemy_getPtrDE

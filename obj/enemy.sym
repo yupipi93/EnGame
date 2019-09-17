@@ -4,21 +4,22 @@ Hexadecimal [16-Bits]
 Symbol Table
 
     .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
-    .__.H$L.=  0000 L   |   0 changeTo   0058 R   |   0 changeTo   0061 R
-  0 collisio   0032 R   |   0 collisio   002F R   |     cpct_dis   **** GX
+    .__.H$L.=  0000 L   |   0 changeTo   007E R   |   0 changeTo   0087 R
+  0 collisio   005E R   |   0 collisio   005C R   |     cpct_dis   **** GX
     cpct_dra   **** GX  |     cpct_get   **** GX  |     cpct_isK   **** GX
     cpct_sca   **** GX  |     cpct_wai   **** GX  |   0 direccio   0004 R
-  0 dont_mov   008C R   |   0 dont_mov   0080 R   |   0 drawEnem   008D R
-  0 enemy_ch   0005 GR  |   0 enemy_dr   003F GR  |   0 enemy_er   0035 GR
-  0 enemy_ge   0045 GR  |   0 enemy_h    0003 R   |   0 enemy_up   003B GR
+  0 dont_mov   00B2 R   |   0 dont_mov   00A6 R   |   0 drawEnem   00B3 R
+  0 enemy_ch   0009 GR  |   0 enemy_dr   0069 GR  |   0 enemy_er   005F GR
+  0 enemy_ge   0005 GR  |   0 enemy_h    0003 R   |   0 enemy_up   0065 GR
   0 enemy_w    0002 R   |   0 enemy_x    0000 R   |   0 enemy_y    0001 R
-  0 ifPlayer   0009 R   |   0 ifPlayer   001B R   |   0 moveEnem   0081 R
-  0 moveEnem   0075 R   |   0 moveTo     006A R   |   0 updateEn   0049 R
+  0 ifPlayer   0023 R   |   0 ifPlayer   0035 R   |   0 ifPlayer   0049 R
+  0 led_off    0020 R   |   0 led_on     001D R   |   0 moveEnem   00A7 R
+  0 moveEnem   009B R   |   0 moveTo     0090 R   |   0 updateEn   006F R
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size   A5   flags    0
+   0 _CODE      size   CB   flags    0
 

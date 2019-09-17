@@ -7,11 +7,8 @@ Hexadecimal [16-Bits]
                               2 ;; PLAYER PUBLIC FUNCTIONS
                               3 ;; ########################################
                               4 
-                              5 .globl 	draw_floor
-                              6 
-                              7 .globl	player_erase
-                              8 .globl	player_update
-                              9 .globl	player_draw
-                             10 .globl 	player_collition
-                             11 .globl  player_getPtrHL
-                             12 
+                              5 .globl	player_erase
+                              6 .globl	player_update
+                              7 .globl	player_draw
+                              8 .globl  player_getPtrHL
+                              9 

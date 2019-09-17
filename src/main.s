@@ -3,23 +3,26 @@
 
 .include 	"player.h.s"
 .include 	"enemy.h.s"
+.include 	"collision.h"
 .include 	"cpctelera.h.s"
 
 
 
-
+;;====================================
+;; Initialize program
+;;====================================
+initialize_program:
+	call cpct_disableFirmware_asm
+ret 
 ;;====================================
 ;; Main program
 ;;====================================
 
 
 _main::
-	call cpct_disableFirmware_asm
-;;=======================
-;; FLOOR
-;;=======================
-   	call draw_floor 					;; Draw Floor
 
+	call initialize_program
+	
 
 ;;=======================
 ;; PLAYER
@@ -31,7 +34,9 @@ _main::
 	call enemy_update					;; Enemy update
 
 	call player_getPtrHL
-	call enemy_checkCollision
+	call enemy_getPtrDE
+	;call enemy_checkCollision
+	call checkCollision
 	ld (0xC000), a 						;; Draw collision led
 	ld (0xC001), a 						;; Draw collision led
 	ld (0xC002), a 						;; Draw collision led
@@ -41,13 +46,9 @@ _main::
 	call player_draw					;; Draw the Player
 	call enemy_draw						;; Enemy draw
 
-	;call enemy_getX 					;; B = Enemy_X 		deprecated
-	;call player_collition				;; Compare Player_X == Enemy_X --> RED	deprecated
+	
 
-;;=======================
-;; ENEMY
-;;=======================
- 	
+
 
 ;;=======================
 ;; V-SYNC

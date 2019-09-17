@@ -35,13 +35,6 @@ floor_y:		.db #88
 ;; PUBLIC FUNCTIONS ::
 ;;####################################
 
-;;====================================
-;; Draw Floor
-;;====================================
-draw_floor::
- call drawFloor
-ret
-
 
 ;;====================================
 ;; Erase th Player
@@ -75,7 +68,7 @@ ret
 
 
 ;;====================================
-;; Gets a pointer to hero data in HL
+;; Gets a pointer to Player data in HL
 ;; DESTROY: HL
 ;; RETURN: 
 ;; 		HL: Pointer to Player data
@@ -87,76 +80,12 @@ ret
 
 
 
-;;====================================
-;; Player Collition
-;;====================================
-
-player_collition::
-
- 	call calculateCollition
-ret
-
-
 
 
 ;;####################################
 ;; PRIVATE FUNCTIONS
 ;;####################################
 
-
-
-;;====================================
-;; Collition Inidcator
-;; DESTROY: 
-;;====================================
-calculateCollition:
-	ld 		b,a 						;; B = Enemy_X
-	add 	a, #1 						;; A = Enemy_X + Width
-	ld 		c, a 						;; C = EX+Enemy_Width (2)
-	
-
-	ld 		a, (player_x) 				;; |
-	ld 		e, a 						;; E = Player_X
-	add 	a, #7 						;; |
-	ld 		d, a 						;; D = PX+Player_With (8)
-
-	;;Comprobar si, EX+Enemy_W  esta a la izquierda de Player_X
-
-	sub 	a,b 						;; |
-	jr 		z, collitionON				;; if (a==b){collition ON}
-	call collitionOFF					;; else{collitionOFF}
-ret
-
-collitionON:
-	ld a, #0x0F							;;Player Color RED
-	call drawIndicator 					;;Draw player :D 
-ret
-
-collitionOFF:
-	ld a, #0x00							;;Player Color RED
-	call drawIndicator 					;;Draw player :D 
-ret
-
-
-drawIndicator:
-	
-	push af 							;; Save A in Stack
-	;;Calculate scrren position
-	ld 		de, #0xC000					;;Video Memory Pointer
-	ld 		 a, #00				;;|
-	ld 		 c, a 						;; C = Player_x
-	ld 		 a, #00				;;|
-	ld 		 b, a 						;; B = Player_y
-	call 	cpct_getScreenPtr_asm		;; Get Pointer to Screen (return to HL)
-	
-
-	;; Draw a box
-	ex 		de, hl 						;; intercabia ambos valores DE --> to Screen Pointer 
-	pop 	af							;; A = User Selecter Color
-	ld 		bc, 	#0x0802				;; 8x8 pixeles
-	call 	 cpct_drawSolidBox_asm		;; Llamar dibujar solidBox
-
-ret
 
 
 
@@ -329,26 +258,7 @@ drawPlayer:
 ret
 
 
-;;====================================
-;; Draw Floor
-;; DESTROY: AF, BC, DE, HL
-;;====================================
-drawFloor:
-	;;Screen Pointer
-	ld 		de, #0xC000					;;Video Memory Pointer
-	ld 		 a, (floor_x)				;;|
-	ld 		 c, a 						;; C = Floor_X
-	ld		 a, (floor_y)				;;|
-	ld		 b, a 						;; B = Floor_Y
-	call 	cpct_getScreenPtr_asm 		;; Get Pointer to Screen (return to HL)
-	
-	;; Draw a Floor
-	ex		de, hl 						;; Change DE <==> HL (Screen pointer)
-	ld		 a, #0xF0					;; Select Color (F0 ==> Yellow)
-	ld 		bc, #0x6440					;; ?x? pixel width
-	call 	cpct_drawSolidBox_asm
 
-ret
 
 
 
